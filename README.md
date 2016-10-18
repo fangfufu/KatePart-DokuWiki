@@ -1,9 +1,13 @@
 # KatePart-DokuWiki
 A KatePart syntax highlighting file for DokuWiki 
 
+## Instruction
+    Instruction: Copy this file to ~/.kde/share/apps/katepart/syntax
+    Your DokuWiki text file also needs the extension of ".dokuwiki".
+
 ## License
     KatePart-DokuWiki - A KatePart syntax highlighting file for DokuWiki
-    Copyright (C) 2016  Fufu Fang
+    Copyright (C) 2016  Fufu Fang, http://www.fangfufu.co.uk/
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
