@@ -2,27 +2,16 @@
 <!--
     KatePart-DokuWiki - A KatePart syntax highlighting file for DokuWiki
     Copyright (C) 2016  Fufu Fang, http://www.fangfufu.co.uk/
-    
+
     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type `show c' for details.
-    
-    Note: Support for plugin:refnotes, plugin:comment and plugin:mathjax 
+
+    Note: Support for plugin:refnotes, plugin:comment and plugin:mathjax
     are added
 -->
 
-<!DOCTYPE language SYSTEM "language.dtd"
-[
-<!ENTITY boldregex   "(\s|^)[\*]{2}[^\s]{1}[^\*_]+[\*]{2}(\s|\.|,|;|:|\-|\?|$)">
-<!ENTITY italicregex "(\s|^)[\/]{2}[^\s]{1}[^\*_]+[\/]{2}(\s|\.|,|;|:|\-|\?|$)">
-<!ENTITY underlinedregex "[_]{2}[^~].*[^~][_]{2}">
-<!ENTITY linkregex "\[\[[^\]\^]+\]\]">
-<!ENTITY mediaregex "\{\{[^\]\^]+\}\}">
-<!ENTITY refnoteregex "\[\([^\]\^]+\)\]">
-<!ENTITY footnoteregex "\(\([^\]\^]+\)\)">
-<!ENTITY monospaceregex "``[^`]+``">
-
-]>
+<!DOCTYPE language SYSTEM "language.dtd">
 <language name="DokuWiki" version="1.0" kateversion="3.7" section="Markup" extensions="*.dokuwiki" priority="15" author="Fufu Fang" license="GPL,BSD">
   <highlighting>
     <contexts>
@@ -33,44 +22,55 @@
         <RegExpr attribute="h4" String="^====\s.*[=]?$"/>
         <RegExpr attribute="h5" String="^=====\s.*[=]?$"/>
         <RegExpr attribute="h5" String="^======\s.*[=]?$"/>
+        <!-- For plugin:comment -->
         <Detect2Chars attribute="Comment" context="Comment" char="/" char1="*" beginRegion="Comment"/>
-        <RegExpr attribute="tag" String="\&lt;[^\]\^]+\&gt;"/>
-        <RegExpr attribute="bold" String="&boldregex;"/>
-        <RegExpr attribute="italic" String="&italicregex;"/>
-        <RegExpr attribute="underlined" String="&underlinedregex;"/>
-        <RegExpr attribute="monospace" String="&monospaceregex;"/>
-        <RegExpr context="bullet" String="^([\s]{2})*[\*\-]\s"/>
+        <StringDetect attribute="others" context="delete" String="&lt;del&gt;" insensitive="false"/>
+        <StringDetect attribute="others" context="sup" String="&lt;sup&gt;" insensitive="false"/>
+        <StringDetect attribute="others" context="sub" String="&lt;sub&gt;" insensitive="false"/>
+
+
+        <RegExpr attribute="tag" String="&lt;[^\]\^]+&gt;"/>
+        <RegExpr attribute="media" String="\{\{[^\]\^]+\}\}"/>
+
+        <RegExpr attribute="bullet" String="^([\s]{2})*[\*\-]\s"/>
         <RegExpr attribute="code" String="^([\s]{2}).*$"/>
-        <IncludeRules context="inc"/>
-      </context>
-      
-      <context attribute="bullet" lineEndContext="#stay" lineEmptyContext="#pop" name="bullet">
-        <RegExpr attribute="bl-bold" String="&boldregex;"/>
-        <RegExpr attribute="bl-italic" String="&italicregex;"/>
-        <RegExpr attribute="bl-underlined" String="&underlinedregex;"/>
-        <RegExpr attribute="bl-monospace" String="&monospaceregex;"/>
-        <IncludeRules context="inc"/>
-      </context>
-      
-      <context attribute="common" name="inc" lineEndContext="#stay">
-        <RegExpr attribute="link" String="&linkregex;"/>
-        <RegExpr attribute="media" String="&mediaregex;"/>
-        <RegExpr attribute="refnote" String="&refnoteregex;"/>
-        <RegExpr attribute="footnote" String="&footnoteregex;"/>
+
+        <RegExpr attribute="bold" String="(\s|^)[\*]{2}[^\s]{1}[^\*_]+[\*]{2}(\s|\.|,|;|:|\-|\?|$)"/>
+        <RegExpr attribute="italic" String="(\s|^)[\/]{2}[^\s]{1}[^\*_]+[\/]{2}(\s|\.|,|;|:|\-|\?|$)"/>
+        <RegExpr attribute="underlined" String="[_]{2}[^~].*[^~][_]{2}"/>
+        <RegExpr attribute="monospace" String="``[^`]+``"/>
+
+        <RegExpr attribute="link" String="\[\[[^\]\^]+\]\]"/>
+        <!-- For plugin:refnotes -->
+        <RegExpr attribute="refnote" String="\[\([^\]\^]+\)\]"/>
+        <RegExpr attribute="footnote" String="\(\([^\]\^]+\)\)"/>
+        <!-- For plugin:mathjax -->
         <RegExpr attribute="maths" String="\$[^\]\^]+\$"/>
+
+        <IncludeRules context="##Alerts" />
       </context>
-      
+
       <context attribute="Comment" lineEndContext="#stay" name="Comment">
         <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment"/>
         <IncludeRules context="##Alerts" />
       </context>
-      
+
+      <context attribute="delete" lineEndContext="#stay" name="delete">
+        <StringDetect attribute="others" context="#pop" String="&lt;/del&gt;" insensitive="false"/>
+      </context>
+
+      <context attribute="others" lineEndContext="#stay" name="sup">
+        <StringDetect attribute="others" context="#pop" String="&lt;/sup&gt;" insensitive="false"/>
+      </context>
+
+      <context attribute="others" lineEndContext="#stay" name="sub">
+        <StringDetect attribute="others" context="#pop" String="&lt;/sub&gt;" insensitive="false"/>
+      </context>
+
     </contexts>
-    
+
     <itemDatas>
       <itemData name="Normal Text" defStyleNum="dsNormal"/>
-      <itemData name="common" defStyleNum="dsNormal"/>
-      <itemData name="bolditalic" defStyleNum="dsNormal" italic="true" bold="true"/>
       <itemData name="italic" defStyleNum="dsNormal" italic="true"/>
       <itemData name="bold" defStyleNum="dsNormal" bold="true"/>
       <itemData name="underlined" defStyleNum="dsNormal" underline="true"/>
@@ -82,26 +82,24 @@
       <itemData name="h6" defStyleNum="dsFunction" bold="true"/>
       <itemData name="Comment" defStyleNum="dsComment"/>
       <itemData name="bullet" defStyleNum="dsNormal"/>
-      <itemData name="bl-italic" defStyleNum="dsNormal" italic="true"/>
-      <itemData name="bl-bold" defStyleNum="dsNormal" bold="true"/>
-      <itemData name="bl-underlined" defStyleNum="dsNormal" underline="true"/>
-      <itemData name="bl-monospace" defStyleNum="dsFloat"/>
       <itemData name="code" defStyleNum="dsOthers"/>
       <itemData name="link" defStyleNum="dsDataType" underline="true"/>
-      <itemData name="media" defStyleNum="dsAlert" italic="false" bold="false"/>
+      <itemData name="media" defStyleNum="dsRegionMarker"/>
       <itemData name="refnote" defStyleNum="dsDataType"/>
       <itemData name="footnote" defStyleNum="dsDataType"/>
-      <itemData name="tag" defStyleNum="dsAlert" italic="false" bold="false"/>
-      <itemData name="maths" defStyleNum="dsChar"/>
+      <itemData name="tag" defStyleNum="dsRegionMarker"/>
+      <itemData name="maths" defStyleNum="dsDataType"/>
+      <itemData name="others" defStyleNum="dsDataType"/>
       <itemData name="monospace" defStyleNum="dsFloat"/>
+      <itemData name="delete" defStyleNum="dsAlert"/>
     </itemDatas>
-    
+
   </highlighting>
-  
+
   <general>
     <comments>
       <comment name="multiLine" start="/*" end="*/" />
     </comments>
   </general>
-  
+
 </language>
